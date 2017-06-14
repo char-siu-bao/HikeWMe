@@ -62,7 +62,17 @@ public class DataService {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 HashMap<String, Object> newPost = (HashMap<String, Object>) dataSnapshot.getValue();
+
+
+//                This returns an arraylist:
+                Log.v("JUDE",  newPost.get("TrailCoordinates").getClass().getName());
+                ArrayList list2 = (ArrayList) newPost.get("TrailCoordinates");
+
+//                This returns a HashMap not sure if it cannot be casted to latlang, I suggest to String parse 
+                Log.v("JUDE", list2.get(0).getClass().getName());
+
                 ArrayList<LatLng> list = (ArrayList<LatLng>) newPost.get("TrailCoordinates");
+
 
                 trailsList.add(new Trails(list, newPost.get("Title").toString(),
                                             newPost.get("Location").toString(), "ucsc",
