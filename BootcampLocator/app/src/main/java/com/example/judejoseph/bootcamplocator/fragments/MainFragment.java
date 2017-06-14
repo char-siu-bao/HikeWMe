@@ -104,7 +104,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback {
             List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
             int zip = Integer.parseInt(addresses.get(0).getPostalCode());
             currentZip = zip;
-            updateMapForZip(zip);
+            //updateMapForZip(zip);
 
         }catch(IOException exception){ Log.v("JUDE", "error IOException : " + exception);}
 

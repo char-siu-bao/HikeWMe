@@ -132,7 +132,7 @@ public class MapsActivity extends FragmentActivity implements
     protected void openGeoJson() {
 
         try {
-            InputStream targetStream = getResources().openRawResource(R.raw.geojson_hiking_trail);
+            InputStream targetStream = getResources().openRawResource(R.raw.geojson_hiking_trail2);
             GeoJSONObject geoJSON = GeoJSON.parse(targetStream);
             JSONObject json = geoJSON.toJSON();
             JSONArray jsonArray = json.getJSONArray("features");

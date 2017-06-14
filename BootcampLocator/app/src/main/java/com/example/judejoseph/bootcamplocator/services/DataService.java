@@ -3,10 +3,15 @@ package com.example.judejoseph.bootcamplocator.services;
 import android.util.Log;
 
 import com.example.judejoseph.bootcamplocator.model.Trails;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
@@ -44,6 +49,43 @@ public class DataService {
 
     public ArrayList<Trails> getTrailLocationsFromRadiusOfZipCode(int zipcode){
         // take in data from server but for now using pretend data //
+        final DatabaseReference trailsFoundForZip = database.getReference()
+                                                    .child("Trails")
+                                                    .child(String.valueOf(zipcode));
+
+        Log.v("JUDE", "finding trail for zip");
+        Log.v("JUDE", String.valueOf(zipcode));
+        Log.v("JUDE", trailsFoundForZip.toString());
+
+        trailsFoundForZip.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Map<String, Object> newPost = (Map<String, Object>) dataSnapshot.getValue();
+                ArrayList<LatLng> list = (ArrayList<LatLng>) newPost.get("TrailCoordinates");
+                Log.v("JUDE","Title: " + newPost.get("Location"));
+                Log.v("JUDE","Coordinates: " + list.get(0));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         ArrayList<Trails> trailsList = new ArrayList<>();
 
