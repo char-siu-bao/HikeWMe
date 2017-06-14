@@ -1,7 +1,5 @@
 package com.example.judejoseph.bootcamplocator.model;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 
 /**
@@ -20,10 +18,10 @@ public class Trails {
     private String trailLocation;
     private String trailImageURL;
     private String zipCode;
-    private ArrayList<LatLng> trailCoordinates;
+    private ArrayList<MyLatLong> trailCoordinates;
     final String DRAWABLE = "@drawable/";
 
-    public ArrayList<LatLng> getTrailCoordinates(){
+    public ArrayList<MyLatLong> getTrailCoordinates(){
         return trailCoordinates;
     }
 
@@ -47,7 +45,11 @@ public class Trails {
         return trailImageURL;
     }
 
-    public Trails(ArrayList<LatLng> trailCoordinates, String trailTitle, String trailLocation, String trailImageURL, String zipCode) {
+    public Trails(){
+
+    }
+
+    public Trails(ArrayList<MyLatLong> trailCoordinates, String trailTitle, String trailLocation, String trailImageURL, String zipCode) {
         this.trailCoordinates = trailCoordinates;
         this.trailTitle = trailTitle;
         this.trailLocation = trailLocation;

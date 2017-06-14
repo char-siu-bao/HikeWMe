@@ -45,11 +45,13 @@
         </activity>
         <activity
             android:name=".activities.MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activities.UserActivity"
-            android:label="@string/user_activity"></activity>
-        <activity android:name=".activities.SaveTrailActivity"></activity>
+            android:label="@string/user_activity" />
+        <activity android:name=".activities.SaveTrailActivity" />
+        <activity android:name=".activities.TrailDetailsActivity"></activity>
     </application>
 
 </manifest>

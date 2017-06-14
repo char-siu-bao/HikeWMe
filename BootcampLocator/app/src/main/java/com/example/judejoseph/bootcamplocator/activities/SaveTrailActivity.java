@@ -6,16 +6,16 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.judejoseph.bootcamplocator.R;
+import com.example.judejoseph.bootcamplocator.model.MyLatLong;
 import com.example.judejoseph.bootcamplocator.model.Trails;
 import com.example.judejoseph.bootcamplocator.services.DataService;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
 public class SaveTrailActivity extends AppCompatActivity {
 
     public Trails trail;
-    public ArrayList<LatLng> mTrailCoords;
+    public ArrayList<MyLatLong> mTrailCoords;
     public Integer trail_zip;
 
     private EditText trail_title;

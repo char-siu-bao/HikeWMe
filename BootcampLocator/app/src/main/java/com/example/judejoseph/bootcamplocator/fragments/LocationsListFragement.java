@@ -39,14 +39,16 @@ public class LocationsListFragement extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_locations_list, container, false);
 
+
         // create list view that is set at the bottom of the parent map view (written in xml file)//
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_locations);
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_locations);
         recyclerView.setHasFixedSize(true);
 
-        LocationsAdapter locationsAdapter = new LocationsAdapter(DataService
+        final LocationsAdapter locationsAdapter = new LocationsAdapter(DataService
                                                                 .getInstance()
                                                                 .getTrailLocationsFromRadiusOfZipCode(zipcode));
         recyclerView.setAdapter(locationsAdapter);
+
 
         // set direction of the scrolling //
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());

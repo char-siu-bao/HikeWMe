@@ -3,7 +3,6 @@ package com.example.judejoseph.bootcamplocator.services;
 import android.util.Log;
 
 import com.example.judejoseph.bootcamplocator.model.Trails;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -11,7 +10,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
@@ -43,9 +41,8 @@ public class DataService {
                                 .child("Trails")
                                 .child(trail.getZipCode())
                                 .child(trail.getTrailTitle());
-        ref.child("Title").setValue(trail.getTrailTitle());
-        ref.child("Location").setValue(trail.getTrailLocation());
-        ref.child("TrailCoordinates").setValue(trail.getTrailCoordinates());
+        ref.setValue(trail);
+
     }
 
     public ArrayList<Trails> getTrailLocationsFromRadiusOfZipCode(final int zipcode){
@@ -55,28 +52,11 @@ public class DataService {
         final DatabaseReference trailsFoundForZip = database.getReference()
                                                     .child("Trails")
                                                     .child(String.valueOf(zipcode));
-
-        Log.v("JUDE", "finding trail for zip");
-
         trailsFoundForZip.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                HashMap<String, Object> newPost = (HashMap<String, Object>) dataSnapshot.getValue();
-
-
-//                This returns an arraylist:
-                Log.v("JUDE",  newPost.get("TrailCoordinates").getClass().getName());
-                ArrayList list2 = (ArrayList) newPost.get("TrailCoordinates");
-
-//                This returns a HashMap not sure if it cannot be casted to latlang, I suggest to String parse 
-                Log.v("JUDE", list2.get(0).getClass().getName());
-
-                ArrayList<LatLng> list = (ArrayList<LatLng>) newPost.get("TrailCoordinates");
-
-
-                trailsList.add(new Trails(list, newPost.get("Title").toString(),
-                                            newPost.get("Location").toString(), "ucsc",
-                                            String.valueOf(zipcode)));
+                Trails trail = dataSnapshot.getValue(Trails.class);
+                trailsList.add(trail);
             }
 
             @Override
@@ -99,6 +79,8 @@ public class DataService {
 
             }
         });
+
+        Log.v("JUDE", "finding trail for zip");
 
         return trailsList;
     }

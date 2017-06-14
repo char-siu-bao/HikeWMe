@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.judejoseph.bootcamplocator.R;
+import com.example.judejoseph.bootcamplocator.model.MyLatLong;
 import com.example.judejoseph.bootcamplocator.model.Trails;
 import com.example.judejoseph.bootcamplocator.services.DataService;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,8 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainFragment extends Fragment implements OnMapReadyCallback {
 
@@ -125,26 +124,24 @@ public class MainFragment extends Fragment implements OnMapReadyCallback {
 
         final ArrayList<Trails> locations = DataService.getInstance()
                                       .getTrailLocationsFromRadiusOfZipCode(zipcode);
-        new Timer().schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        for (int x = 0; x < locations.size(); x++){
-                            Log.v("JUDE", "got locations to drop pin" + locations.get(x).getTrailCoordinates());
 
-                            Trails trail = locations.get(x);
-                            MarkerOptions marker = new MarkerOptions()
-                                    .position(new LatLng(trail.getTrailCoordinates().get(0).latitude,
-                                                            trail.getTrailCoordinates().get(0).longitude));
-                            marker.title(trail.getTrailTitle());
-                            marker.snippet(trail.getTrailLocation());
-                            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_pin));
-                            mMap.addMarker(marker);
-                        }
-                    }
-                },
-                5000
-        );
+        for (int x = 0; x < locations.size(); x++){
+            Log.v("JUDE", "got locations to drop pin" + locations.get(x).getTrailCoordinates());
+
+            Trails trail = locations.get(x);
+
+            MyLatLong point = trail.getTrailCoordinates().get(0);
+            com.google.android.gms.maps.model.LatLng mapsLatLng =
+                    new com.google.android.gms.maps.model.LatLng(point.getLat(),
+                            point.getLng());
+
+            MarkerOptions marker = new MarkerOptions()
+                    .position(mapsLatLng);
+            marker.title(trail.getTrailTitle());
+            marker.snippet(trail.getTrailLocation());
+            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_pin));
+            mMap.addMarker(marker);
+        }
 
     }
 

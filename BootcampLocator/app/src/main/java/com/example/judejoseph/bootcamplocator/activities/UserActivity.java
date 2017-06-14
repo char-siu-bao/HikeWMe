@@ -24,6 +24,7 @@ public class UserActivity extends AppCompatActivity {
                     beginTransaction().
                     add(R.id.container_user, userFragement).
                     commit();
+
         }
 
     }

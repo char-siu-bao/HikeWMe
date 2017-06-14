@@ -19,6 +19,7 @@ import com.cocoahero.android.geojson.GeoJSON;
 import com.cocoahero.android.geojson.GeoJSONObject;
 import com.example.judejoseph.bootcamplocator.R;
 import com.example.judejoseph.bootcamplocator.fragments.MainFragment;
+import com.example.judejoseph.bootcamplocator.model.MyLatLong;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -44,9 +45,9 @@ public class MapsActivity extends FragmentActivity implements
 
     final int PERMISSION_LOCATION = 777;
 
-    private ArrayList<ArrayList<LatLng>> points;
-    private ArrayList<LatLng> trailCoordinates;
-    public boolean makeTrail = false;
+    private ArrayList<ArrayList<MyLatLong>> points;
+    private ArrayList<MyLatLong> trailCoordinates;
+    public boolean makeTrail;
     Polyline line;
 
     private GoogleApiClient mGoogleApiClient;
@@ -58,7 +59,9 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        points = new ArrayList<ArrayList<LatLng>>();
+        Log.v("JUDE", "onCreate");
+
+        points = new ArrayList<ArrayList<MyLatLong>>();
 
         // access Location Services API //
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -76,6 +79,22 @@ public class MapsActivity extends FragmentActivity implements
                     add(R.id.container_main, mainFragment).
                     commit();
         }
+
+
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        Log.v("JUDE", "onResume");
+        makeTrail = getIntent().getBooleanExtra("showNewTrail", false);
+        Log.v("JUDE", String.valueOf(makeTrail));
+
+        Log.v("JUDE", String.valueOf(makeTrail));
+        if (makeTrail){
+            Log.v("JUDE", "MAKING FAKE TRAIL");
+            makeFakeTrail();
+        }
+        makeTrail = false;
 
     }
 
@@ -138,16 +157,16 @@ public class MapsActivity extends FragmentActivity implements
             JSONArray jsonArray = json.getJSONArray("features");
             for (int i = 0; i< 3; i++){
                 JSONArray coordinates = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
-                points.add(new ArrayList<LatLng>());
+                points.add(new ArrayList<MyLatLong>());
                 for ( int j = 0; j < coordinates.length(); j++){
                     JSONArray coordinate = coordinates.getJSONArray(j);
-                    points.get(i).add(new LatLng(coordinate.getDouble(1), coordinate.getDouble(0)));
+                    points.get(i).add(new MyLatLong(coordinate.getDouble(1), coordinate.getDouble(0)));
                 }
 
                 // upload fake data to work with //
                 if(i == 0){
-                    trailCoordinates = new ArrayList<LatLng>();
-                    ArrayList<LatLng> data = points.get(0);
+                    trailCoordinates = new ArrayList<MyLatLong>();
+                    ArrayList<MyLatLong> data = points.get(0);
 
                     for(int k = 0; k < data.size(); k++){
                         trailCoordinates.add(data.get(k));
@@ -234,8 +253,11 @@ public class MapsActivity extends FragmentActivity implements
         for (int i = 0; i < points.size(); i++) {
             PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
             for(int j = 0; j < points.get(i).size(); j++){
-                LatLng point = points.get(i).get(j);
-                options.add(point);
+                MyLatLong point = points.get(i).get(j);
+                com.google.android.gms.maps.model.LatLng mapsLatLng =
+                        new com.google.android.gms.maps.model.LatLng(point.getLat(),
+                                point.getLng());
+                options.add(mapsLatLng);
             }
             mainFragment.produceFakeTrail(options);
         }
