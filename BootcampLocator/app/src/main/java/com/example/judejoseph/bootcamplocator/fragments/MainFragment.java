@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainFragment extends Fragment implements OnMapReadyCallback {
 
@@ -104,11 +106,10 @@ public class MainFragment extends Fragment implements OnMapReadyCallback {
             List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
             int zip = Integer.parseInt(addresses.get(0).getPostalCode());
             currentZip = zip;
-            //updateMapForZip(zip);
+            updateMapForZip(zip);
 
         }catch(IOException exception){ Log.v("JUDE", "error IOException : " + exception);}
 
-        //updateMapForZip(95060);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }
 
@@ -120,20 +121,32 @@ public class MainFragment extends Fragment implements OnMapReadyCallback {
     * */
     private void updateMapForZip(int zipcode){
 
-        ArrayList<Trails> locations = DataService.getInstance()
+        Log.v("JUDE", "called updateMapForZip");
+
+        final ArrayList<Trails> locations = DataService.getInstance()
                                       .getTrailLocationsFromRadiusOfZipCode(zipcode);
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        for (int x = 0; x < locations.size(); x++){
+                            Log.v("JUDE", "got locations to drop pin" + locations.get(x).getTrailCoordinates());
 
-        for (int x = 0; x < locations.size(); x++){
-            Trails trail = locations.get(x);
-            MarkerOptions marker = new MarkerOptions()
-                                   .position(trail.getTrailCoordinates().get(0));
-            marker.title(trail.getTrailTitle());
-            marker.snippet(trail.getTrailLocation());
-            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_pin));
-            mMap.addMarker(marker);
-        }
+                            Trails trail = locations.get(x);
+                            MarkerOptions marker = new MarkerOptions()
+                                    .position(new LatLng(trail.getTrailCoordinates().get(0).latitude,
+                                                            trail.getTrailCoordinates().get(0).longitude));
+                            marker.title(trail.getTrailTitle());
+                            marker.snippet(trail.getTrailLocation());
+                            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_pin));
+                            mMap.addMarker(marker);
+                        }
+                    }
+                },
+                5000
+        );
+
     }
-
 
 
 }

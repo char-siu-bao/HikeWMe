@@ -11,7 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 
 /**
  *
@@ -43,27 +43,30 @@ public class DataService {
                                 .child("Trails")
                                 .child(trail.getZipCode())
                                 .child(trail.getTrailTitle());
+        ref.child("Title").setValue(trail.getTrailTitle());
         ref.child("Location").setValue(trail.getTrailLocation());
         ref.child("TrailCoordinates").setValue(trail.getTrailCoordinates());
     }
 
-    public ArrayList<Trails> getTrailLocationsFromRadiusOfZipCode(int zipcode){
+    public ArrayList<Trails> getTrailLocationsFromRadiusOfZipCode(final int zipcode){
         // take in data from server but for now using pretend data //
+        final ArrayList<Trails> trailsList = new ArrayList<Trails>();
+
         final DatabaseReference trailsFoundForZip = database.getReference()
                                                     .child("Trails")
                                                     .child(String.valueOf(zipcode));
 
         Log.v("JUDE", "finding trail for zip");
-        Log.v("JUDE", String.valueOf(zipcode));
-        Log.v("JUDE", trailsFoundForZip.toString());
 
         trailsFoundForZip.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Map<String, Object> newPost = (Map<String, Object>) dataSnapshot.getValue();
+                HashMap<String, Object> newPost = (HashMap<String, Object>) dataSnapshot.getValue();
                 ArrayList<LatLng> list = (ArrayList<LatLng>) newPost.get("TrailCoordinates");
-                Log.v("JUDE","Title: " + newPost.get("Location"));
-                Log.v("JUDE","Coordinates: " + list.get(0));
+
+                trailsList.add(new Trails(list, newPost.get("Title").toString(),
+                                            newPost.get("Location").toString(), "ucsc",
+                                            String.valueOf(zipcode)));
             }
 
             @Override
@@ -87,15 +90,6 @@ public class DataService {
             }
         });
 
-        ArrayList<Trails> trailsList = new ArrayList<>();
-
-        if (zipcode == 95060) {
-            // this data will come from the backend server after user saves hiking trail //
-            //trailsList.add(new Trails(points.get(0),
-            //        "Pogonip Hike", "333 Golf Club Dr, Santa Cruz, CA 95060, USA", "pogonip"));
-            //trailsList.add(new Trails(points.get(1),
-            //        "UCSC Upper Campus", "7487 Red Hill Rd, Santa Cruz, CA 95064, USA", "upper_campus"));
-        }
         return trailsList;
     }
 

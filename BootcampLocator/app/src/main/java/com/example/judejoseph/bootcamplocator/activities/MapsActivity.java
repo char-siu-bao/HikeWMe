@@ -136,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements
             GeoJSONObject geoJSON = GeoJSON.parse(targetStream);
             JSONObject json = geoJSON.toJSON();
             JSONArray jsonArray = json.getJSONArray("features");
-            for (int i = 0; i< 2; i++){
+            for (int i = 0; i< 3; i++){
                 JSONArray coordinates = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
                 points.add(new ArrayList<LatLng>());
                 for ( int j = 0; j < coordinates.length(); j++){
